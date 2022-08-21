@@ -2,6 +2,8 @@
 
 スニペット挿入プラグイン。
 
+![tiny-snippet](https://user-images.githubusercontent.com/345832/185777226-0e89d3cf-503e-43eb-9aa2-f32d3c5462a8.gif)
+
 ## Usage:
 
 ### スニペット入力
