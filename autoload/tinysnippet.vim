@@ -6,8 +6,14 @@ let s:last_snippet_end_line = 0
 let s:pattern_of_tabstop_or_placeholder = '\(\${\d\{-\}:\w\{-\}}\|\$\d\)'
 
 function! tinysnippet#Complete(findstart, base) abort
-    if a:findstart == 1
-        return col(".")
+    if a:findstart
+        " 単語の先頭を探す
+        let line = getline('.')
+        let start = col('.') - 1
+        while start > 0 && line[start - 1] =~ '\a'
+            let start -= 1
+        endwhile
+        return start
     endif
 
     " カーソル位置記録
@@ -41,7 +47,7 @@ function! tinysnippet#Complete(findstart, base) abort
 
     " スニペット検索ディレクトリからスニペットファイルを探して補完候補作成
     for d in l:target_directories
-        let l:files = split(glob(l:d . '/' . l:filetype . '/*'), "\n")
+        let l:files = split(glob(l:d . '/' . l:filetype . '/' . a:base . '*'), "\n")
         for f in l:files
             let l:file_contents = readfile(fnamemodify(l:f, ':p'))
             let l:complete_item = {'word': join(l:file_contents, "\n"), 'abbr': fnamemodify(l:f, ':t:r')}
@@ -141,8 +147,6 @@ function! tinysnippet#select_tabstop_or_placeholder(first_search_option, second_
         autocmd!
         autocmd InsertLeave <buffer> call tinysnippet#EditedPlaceHolderCallback()
     augroup END
-
-    normal 
 
     " 次のマークまで移動
     let l:line = search(s:pattern_of_tabstop_or_placeholder, a:first_search_option)
