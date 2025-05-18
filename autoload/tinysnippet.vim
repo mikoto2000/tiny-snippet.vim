@@ -72,46 +72,12 @@ function! tinysnippet#SnippetCompleteDoneCallback() abort
         return
     endif
 
-    """ {{{ 複数行ワークアラウンド
-
-    " z 退避
-    let s:tmp = @z
-    let @z ='' 
-
-    " z に現在行のインデントをコピー
-    normal ^hv0"zy
-
-    " complete_item から受け取った「改行無しのword」を NULL 文字毎に行分割
-    let l:line = getline(".")
-    let l:lines = split(l:line, "\n")
-
-    " 先頭行挿入
-    normal o
-    call setline(".", l:lines[0])
-    call remove(l:lines, 0)
-
-    " 2 行目以降挿入
-    while (len(l:lines) != 0)
-        normal o
-        let tmp = @z . l:lines[0]
-        call setline(".", l:tmp)
-        call remove(l:lines, 0)
-    endwhile
-
-    " z 復元
-    let @z = s:tmp
-
-    """ }}} 複数行ワークアラウンド
-
     let s:last_snippet_end_line = getpos(".")[1] - 1
 
     " カーソル位置復元
+    delete _
     call setpos(".", s:pos)
 
-    """ {{{ 複数行ワークアラウンド
-    " complete_item から受け取った「改行無しのword」を削除
-    delete _
-    """ }}} 複数行ワークアラウンド
 endfunction
 
 
